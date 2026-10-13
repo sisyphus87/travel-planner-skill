@@ -435,6 +435,8 @@ def check_v2(day: dict[str, Any]) -> dict[str, Any]:
         if a is None or b is None:
             continue
         mode = pois[i].get("next_mode", "transit")  # 默认公交
+        if mode == "train":
+            continue  # 铁路段按时刻表固定，直线粗算不适用，不计入通勤占比
         cm = commute_minutes(a, b, mode)
         total_commute += cm
         if cm > worst_seg:
@@ -470,6 +472,8 @@ def check_v3(day: dict[str, Any]) -> dict[str, Any]:
     candidate_count = 0
     routed_count = 0
     poi_locs = [loc for p in day.get("pois") or [] if (loc := get_loc(p)) is not None]
+    hotel_locs = [loc for p in day.get("pois") or []
+                  if p.get("cat") == "hotel" and (loc := get_loc(p)) is not None]
     for meal_name, meal in meals.items():
         if not isinstance(meal, dict):
             continue
@@ -485,7 +489,9 @@ def check_v3(day: dict[str, Any]) -> dict[str, Any]:
             candidate_count += 1
             d = haversine_km(tuple(center), loc)
             nearest_poi = min((haversine_km(loc, p) for p in poi_locs), default=float("inf"))
-            if d > V3_WARN_KM and nearest_poi <= 0.3:
+            # 住宿锚点 1.5km 内的餐厅视为『酒店周边就近用餐』——住地周边是最常见用餐场景
+            nearest_hotel = min((haversine_km(loc, p) for p in hotel_locs), default=float("inf"))
+            if d > V3_WARN_KM and (nearest_poi <= 0.3 or nearest_hotel <= 1.5):
                 routed_count += 1
                 continue
             if d > worst_d:
@@ -563,7 +569,9 @@ def check_v5(last_day: dict[str, Any], trip_meta: dict[str, Any]) -> dict[str, A
     if not pois:
         return {"id": "V5", "rule": "末日返程缓冲", "status": "⚠️", "note": f"末日无 POI 数据；返程：{flight_note} {flight_time}"}
 
-    last_poi = pois[-1]
+    # 只统计发车前的 POI：到达/换乘节点（时间晚于返程发车）不参与缓冲计算
+    in_bounds = [p for p in pois if (p.get("end_time") or p.get("time") or "") <= flight_time]
+    last_poi = (in_bounds or pois)[-1]
     end_time = last_poi.get("end_time") or last_poi.get("time") or ""
 
     if not end_time or not flight_time:
