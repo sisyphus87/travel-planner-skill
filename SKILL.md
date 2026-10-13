@@ -15,8 +15,9 @@ description: 面向中国大陆行程的旅行规划、行前复核与临场调�
 4. **区分事实、体验和估算。** 攻略用于发现候选与软信号，不能覆盖官方硬事实；价格区间必须带来源和查询时间。
 5. **最少打扰用户。** 先利用已有信息和工具，只询问会实质改变方案的缺项。
 6. **保护隐私。** 不把 API Key 写进 JSON、HTML、URL 或仓库；公开发布前明确提示页面可能暴露城市、日期、酒店和路线。
-7. **不擅自改环境。** 不自动安装 MCP、浏览器扩展或 CLI；缺能力时说明影响，并提供可继续的降级方案。
+7. **不擅自改环境。** 不自动安装 MCP、浏览器扩展或 CLI；缺能力时说明影响。
 8. **双输出保持一致。** 对话版攻略与 HTML 必须包含相同的核心行程事实；缺少任一输出、仅返回摘要或链接、两者版本不一致，都不算完成。
+9. **小红书与高德不可降级（个人定制红线）。** 这两类源出现不可用或降级时，**中止产出并提醒用户**，不要用低质替代（网页摘要、记忆、编造）继续——宁可停下恢复能力，也不交付未经核查的内容。
 
 ## 信息源
 
@@ -24,7 +25,7 @@ description: 面向中国大陆行程的旅行规划、行前复核与临场调�
 
 | 阶段 | 来源 | 平台职责 | 必须产出 |
 | --- | --- | --- | --- |
-| 目的地发现 | 小红书 | 发现近期分区、节奏、排队和踩雷 | 候选区域与体验风险 |
+| 目的地发现 | 小红书 | 发现近期分区、节奏、排队和踩雷；**区间交通核查与难题优先问**；内置点点 AI 检索合集可与用户对接 | 候选区域、体验风险与区间交通实况 |
 | 规则确认 | 官方与运营方 | 确认开放、预约、票务、临时通知、天气和交通规则 | 决定能不能去的硬事实 |
 | 路线落地 | 高德地图 | 确认 POI、坐标、距离、路线和通勤时长 | 可执行的地点顺序与移动时间 |
 | 餐饮筛选 | 美团攻略 | 围绕已确定区域建立餐厅候选池 | 菜系、预算和用餐场景候选 |
@@ -180,6 +181,14 @@ python scripts/render_html.py assets/template.html trip.json -o trip.html
 
 如果来源出现冲突，保留官方结论，并在说明里记录冲突与取舍。
 
+## 个人定制规范（sisyphus87）
+
+在标准流程之上叠加以下定制，冲突时以定制为准：
+
+- **检索红线**：小红书与高德不可降级，降级即中止提醒；善用小红书点点 AI 合集作为输入（见 [references/user-playbook.md](references/user-playbook.md) 与 [references/xhs-research.md](references/xhs-research.md)）。
+- **美食推荐**：每餐 1-2 个就近推荐（小红书甄别 + 高德评分双核），早餐"合适且近"才推，景区内可不推（见 [references/meal-recommendations.md](references/meal-recommendations.md)）。
+- **双版本版式**：交互版（行动清单 + 攻略穿插 + 亮色锁定）与静态展开版（零 JS、节点全带 📍导航、只留每日行程 + 预算）的定调基准与工程纪律（改前归档、断言先行、fresh read、火车段入车站 POI）见 [references/user-playbook.md](references/user-playbook.md)。
+
 ## 资源索引
 
 - [data-sources.md](references/data-sources.md)：五类信息源、优先级和证据规范
@@ -190,5 +199,7 @@ python scripts/render_html.py assets/template.html trip.json -o trip.html
 - [deployment.md](references/deployment.md)：本地交付与可选发布
 - [setup-guide.md](references/setup-guide.md)：用户明确要求时的能力配置
 - [amap-mcp-usage.md](references/amap-mcp-usage.md)：高德查询与路线字段
-- [xhs-research.md](references/xhs-research.md)：小红书软信号
+- [xhs-research.md](references/xhs-research.md)：小红书软信号（含点点 AI、评论区甄别、不降级红线）
 - [meituan-guide-research.md](references/meituan-guide-research.md)：美团餐厅候选
+- [user-playbook.md](references/user-playbook.md)：个人定制总纲（检索红线、双版本版式、工程纪律）
+- [meal-recommendations.md](references/meal-recommendations.md)：美食推荐规范（每餐 1-2、就近原则、甄别广告）

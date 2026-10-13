@@ -17,6 +17,12 @@
 
 </div>
 
+> **本仓库是个人定制 fork**（基于上游 [SquirrelSong5/travel-planner-skill](https://github.com/SquirrelSong5/travel-planner-skill) v3.3.0）。定制差异见 [references/user-playbook.md](references/user-playbook.md)，要点：
+> ① **小红书与高德不可降级**——任一不可用即中止并提醒，不用低质替代继续；
+> ② 小红书扩展为区间交通核查与难题优先源，善用内置**点点 AI** 检索合集与用户对接；
+> ③ **美食推荐规范**：每餐 1-2 个就近推荐（小红书甄别广告+评论区信息 + 高德评分/人均/距离双核落店），早餐"合适且近"才推、景区内可不推；
+> ④ **双版本交付版式**：交互版（行动清单+攻略穿插+亮色锁定）与静态展开版（零 JS、时间线节点全带 📍高德导航、只留每日行程+预算）。
+
 `travel-planner` 是一个可安装到 Codex、Claude Code、Cursor 等 AI Agent 的中国大陆旅行规划 Skill。安装后，只需告诉 AI 目的地、日期、人数、预算和偏好，它就会调研最新信息、编排每日路线，并生成一份可以直接使用的旅行攻略。
 
 一份行程会同时提供两种形式：

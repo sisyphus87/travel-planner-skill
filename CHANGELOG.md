@@ -2,6 +2,16 @@
 
 本 skill 遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
+## [3.3.1-personal.1] - 2026-10-13
+
+### 个人定制层（sisyphus87 fork）
+
+- **检索红线**：小红书与高德列为不可降级信息源，任一降级/不可用时中止产出并提醒（SKILL.md 工作原则 9 + data-sources.md 降级规则覆盖行）；
+- **小红书升级**：区间交通核查、难题优先问；新增内置点点 AI 检索合集用法与用户对接流程；评论区必看与广告甄别信号清单（xhs-research.md 重写）；
+- **新增美食推荐规范**（references/meal-recommendations.md）：每餐 1-2 就近推荐、早餐"合适且近"才推、景区内可不推、小红书甄别+高德评分/人均/距离双核落店、河南实战案例表；
+- **新增个人定制总纲**（references/user-playbook.md）：双版本交付版式基准（交互版/静态展开版定调）、📍导航链接规范、工程纪律（改前归档/断言先行/fresh read/火车段入车站 POI/提醒事项三处落点）；
+- README 增加定制 fork 说明。
+
 ## [3.3.0] - 2026-08-24
 
 ### 轻量安装与配套能力
