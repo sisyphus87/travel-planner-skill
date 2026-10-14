@@ -16,20 +16,31 @@
 - **评论区常出关键信息**：差评、避雷、服务态度、更优替代（"不如斜对面那家"）都值得采集进推荐备注。
 - 多帖互证才落店；单帖强推但评论区翻车的降级为备选或不采纳。
 
-## 二、双版本交付版式（定调基准）
+## 二、双版本交付版式（定调基准，强制）
 
-同一份 trip.json 渲染两个交付物，版式均已由用户定调锁定，**修改前先归档**（`_history/<时间戳>_<轮次>_前/`）。
+**每次交付必须同时产出两份**，由同一份 trip.json 生成，各自参照本节规范；只交一份不算完成。两版版式均已由用户定调锁定，**修改前先归档**（`_history/<时间戳>_<轮次>_前/`）。
 
-### 交互版 trip.html（本人用，可含 JS）
+### 交互版 trip.html（爸妈/本人手机用，可含 JS）
 
 管线：`render_markdown → render_html（assets/template.html）→ 项目层注入（清单/攻略/亮色）→ 校验部署`。
 
 - hero 区：标题 + 日期行；**不放 summary 总览段**（用户 2026-10-13 指示删除）。
+- **隐藏「行程信息」悬浮按钮**（`.drawer-toggle`，模板已内置 `button.drawer-toggle{display:none!important}`）——手机端占位置，行程信息由每日清单承载（用户 2026-10-13 指示）。
 - 紧随 hero：**每日行动清单**卡片（行前 + D1-Dn，可勾选、localStorage 记忆、进度条）；每张卡含当日关键动作（车次座位/集合点/电话/提醒事项）。
 - 各日行程卡内穿插小红书攻略要点（details 折叠）+ 笔记链接 chips。
 - 亮色适老化锁定（`color-scheme: light` 强制层），移动端字号 ≥17.5px。
+- **交付时必须发布 GitHub Pages**（见下节），返回验证过的公开链接；本地文件与线上链接同回合交付。
 
-### 静态展开版 offline_flat.html（父母用，iOS QuickLook 禁 JS）
+### 交互版 GitHub Pages 发布（每次交付必做）
+
+1. 仓库 `sisyphus87/travel-pages`（public，main 分支根目录）；
+2. 文件名用**不可猜测的随机 slug**（如 `h8n-<10 位随机>.html`）；同一行程复用首次 slug，后续更新覆盖同一文件（链接不变）；
+3. 根目录保留伪装 404 的 `index.html`，不放任何索引列表；
+4. push 后等 Pages 构建（约 1-2 分钟），`curl -o /dev/null -w '%{http_code}'` 得 200 并抽查关键内容（标题/清单/当日要点）后才把链接给用户；
+5. 页面含司机/导游电话、取票号等——随机 URL + 无索引即轻量保护，不额外脱敏（爸妈自用必需）；
+6. 建议顺手生成二维码（`qrcode` 库）存 `~/Downloads/<行程名>_二维码.png`。
+
+### 静态展开版 offline_flat.html（父母预览器用，iOS QuickLook 禁 JS）
 
 - **零脚本、零折叠**，单文件；排版锁定为用户 2026-10-10 参考版：暖色卡片、时间线行「时间 + 加粗节点 + 📍导航 + 停留时长 + 备注 + 费用」。
 - **每个时间线节点带 📍导航链接**：`https://uri.amap.com/navigation?to={lng},{lat},{quote(名称去状态后缀)}&mode=car&coordinate=gaode&callnative=1`；坐标从 trip.json 全部 POI 自动同步（COORD 表），不手维护。

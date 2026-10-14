@@ -2,6 +2,11 @@
 
 本 skill 遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
+## [3.3.1-personal.2] - 2026-10-13
+
+- 模板隐藏「行程信息」悬浮按钮（`button.drawer-toggle{display:none!important}`，手机端占位问题）；
+- 双版本交付升为强制项：交互版交付必须发布 GitHub Pages 并返回验证链接（随机 slug + 伪装 404 索引 + curl 200 验证 + 二维码），流程写入 user-playbook.md。
+
 ## [3.3.1-personal.1] - 2026-10-13
 
 ### 个人定制层（sisyphus87 fork）

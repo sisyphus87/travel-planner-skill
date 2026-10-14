@@ -187,7 +187,7 @@ python scripts/render_html.py assets/template.html trip.json -o trip.html
 
 - **检索红线**：小红书与高德不可降级，降级即中止提醒；善用小红书点点 AI 合集作为输入（见 [references/user-playbook.md](references/user-playbook.md) 与 [references/xhs-research.md](references/xhs-research.md)）。
 - **美食推荐**：每餐 1-2 个就近推荐（小红书甄别 + 高德评分双核），早餐"合适且近"才推，景区内可不推（见 [references/meal-recommendations.md](references/meal-recommendations.md)）。
-- **双版本版式**：交互版（行动清单 + 攻略穿插 + 亮色锁定）与静态展开版（零 JS、节点全带 📍导航、只留每日行程 + 预算）的定调基准与工程纪律（改前归档、断言先行、fresh read、火车段入车站 POI）见 [references/user-playbook.md](references/user-playbook.md)。
+- **双版本交付（强制）**：每次交付同时产出交互版与静态展开版，各按其版式规范——交互版（行动清单 + 攻略穿插 + 亮色锁定 + 隐藏行程信息悬浮按钮 + **发布 GitHub Pages 并返回验证链接**）与静态展开版（零 JS、节点全带 📍导航、只留每日行程 + 预算），版式基准、Pages 发布流程与工程纪律（改前归档、断言先行、fresh read、火车段入车站 POI）见 [references/user-playbook.md](references/user-playbook.md)。
 
 ## 资源索引
 

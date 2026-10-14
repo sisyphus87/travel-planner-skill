@@ -317,6 +317,8 @@
       }
       .drawer-toggle .label { display: none; }
     }
+    /* 个人定制：隐藏「行程信息」悬浮按钮——手机端占位，行程信息已由每日清单承载（specificity 高于 900px 断点的强制显示） */
+    button.drawer-toggle { display: none !important; }
 
     /* ===== Drawer Backdrop ===== */
     .drawer-backdrop {
