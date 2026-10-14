@@ -36,9 +36,11 @@
 1. 仓库 `sisyphus87/travel-pages`（public，main 分支根目录）；
 2. 文件名用**不可猜测的随机 slug**（如 `h8n-<10 位随机>.html`）；同一行程复用首次 slug，后续更新覆盖同一文件（链接不变）；
 3. 根目录保留伪装 404 的 `index.html`，不放任何索引列表；
-4. push 后等 Pages 构建（约 1-2 分钟），`curl -o /dev/null -w '%{http_code}'` 得 200 并抽查关键内容（标题/清单/当日要点）后才把链接给用户；
-5. 页面含司机/导游电话、取票号等——随机 URL + 无索引即轻量保护，不额外脱敏（爸妈自用必需）；
-6. 建议顺手生成二维码（`qrcode` 库）存 `~/Downloads/<行程名>_二维码.png`。
+4. **⚠ inline 隐藏规则坑（2026-10-14 实证）**：页面里 inline `<style>` 形式的 `.drawer-toggle{display:none!important}`（含注释版与压缩版两种写法）会导致 Pages 构建 `errored: Page build failed`（无错误细节；同内容去掉该行即 built，站点删建也救不回）。**发布前必须把该规则剥离到外部 `styles.css`**（规则写 `button.drawer-toggle,.drawer,.drawer-backdrop{display:none !important}`）并在 `</head>` 前加 `<link rel="stylesheet" href="styles.css">`；本地自包含版（Downloads 交付）保留模板 inline 行不受影响；
+5. 发布步骤（手动配方，不落脚本）：剥离转换 → cp 页面与 styles.css 到仓库 clone → `git -C <dir> commit/push`（注意 Mimosa 拦复合命令，用 `git -C` 独立跑；远端有新提交先 `pull --rebase`——并行会话可能推过）→ 轮询 `gh api repos/sisyphus87/travel-pages/pages/builds` 至 `built`（errored 即中止排查）→ `curl` 200 且字节数与本地一致才算成功；
+6. 若连续 errored 且内容无嫌疑：`gh api -X DELETE repos/sisyphus87/travel-pages/pages` 删站重建（`POST /pages` source main /），可修复顽固站点级构建故障；
+7. 页面含司机/导游电话、取票号等——随机 URL + 无索引即轻量保护，不额外脱敏（爸妈自用必需）；
+8. 建议顺手生成二维码（`qrcode` 库）存 `~/Downloads/<行程名>_二维码.png`。
 
 ### 静态展开版 offline_flat.html（父母预览器用，iOS QuickLook 禁 JS）
 
