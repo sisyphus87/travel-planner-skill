@@ -2,6 +2,17 @@
 
 本 skill 遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
+## [3.3.1-personal.4] - 2026-10-15
+
+### 导航能力与版式硬化（河南 8 日游十三至十五调沉淀）
+
+- 模板：交通段「导航」链接加 📍 图标；meal-leg 用餐推荐生成「📍导航/📍备选」（`mealNavUrl` 用 meals 坐标，无坐标不生成，店名取短名）；新增 meal-nav 样式。
+- 模板修复：时段窗口外餐次的兜底插入原为空壳（如少林日午餐条从不显示）——补真插入；`timelineItems` 初始必须 `null`（空字符串会清空无兜底天的时间线）。
+- 模板修复：天气提示胶囊 `white-space:nowrap` 在长文本（30+ 字）手机端撑破日卡——改允许换行 + 限宽。
+- 模板：「行程信息」悬浮按钮默认隐藏（手机占位），Pages 版隐藏走外部 styles.css（inline 隐藏样式会使 GitHub Pages 构建失败）。
+- user-playbook.md 新增四节：导航能力基准、渲染改动浏览器回归验证法（http.server + 逐天点 tab）、清单区整体收缩配方、静态版美食行导航配方。
+- 校验器：V2 跳过 train 段通勤占比、V5 只看发车前最后 POI、V3 餐厅距当日酒店 ≤1.5km 豁免（三个语义盲区补丁）。
+
 ## [3.3.1-personal.2] - 2026-10-13
 
 - 模板隐藏「行程信息」悬浮按钮（`button.drawer-toggle{display:none!important}`，手机端占位问题）；
