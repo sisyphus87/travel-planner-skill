@@ -1013,6 +1013,19 @@
       padding-left: var(--sp-2);
       border-left: 1px dashed var(--line);
     }
+    ol.timeline li.time-block .meal-leg .meal-nav {
+      margin-left: auto;
+      flex-shrink: 0;
+      align-self: center;
+      font-size: var(--fs-xs);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 2px 8px;
+      border: 1px solid var(--accent-soft);
+      border-radius: 4px;
+      background: var(--accent-soft);
+    }
     @media (prefers-color-scheme: dark) {
       ol.timeline li.time-block .meal-leg {
         background: #2a1f0a;
@@ -1647,6 +1660,15 @@
         const fromName = encodeURIComponent(naviPlaceName(from) || '起点');
         const toName = encodeURIComponent(naviPlaceName(to) || '终点');
         return `https://uri.amap.com/navigation?from=${f.lng},${f.lat},${fromName}&to=${t.lng},${t.lat},${toName}&mode=${amapMode(mode)}&callnative=1`;
+      }
+
+      /** 推荐餐厅导航链接：用 meal 自带坐标（无坐标不生成）；店名取「（」和「·」前的短名 */
+      function mealNavUrl(m) {
+        if (m && typeof m.lng === 'number' && typeof m.lat === 'number') {
+          const nm = (String(m.name).split('（')[0].split('·')[0]) || m.name;
+          return `https://uri.amap.com/navigation?to=${m.lng},${m.lat},${encodeURIComponent(nm)}&mode=car&coordinate=gaode&callnative=1`;
+        }
+        return '';
       }
 
       const DAY_ROUTE_VIA_MAX = 16;
@@ -2528,7 +2550,7 @@
           ? transport.links.amap_navi
           : buildAmapNaviUrl(fromPoint, toPoint, transport.mode);
         const navLink = navUrl2
-          ? `<a class="next-leg-nav" href="${esc(navUrl2)}" target="_blank" rel="noopener">导航</a>`
+          ? `<a class="next-leg-nav" href="${esc(navUrl2)}" target="_blank" rel="noopener">📍导航</a>`
           : '';
         const cls = legClass || 'next-leg';
         return `<div class="${cls}" aria-label="${esc(routeLabel)}">
@@ -2679,8 +2701,10 @@
               <span class="meal-leg-icon">🍽</span>
               <span class="meal-leg-label">${esc(labelMap[matchedMealType])}：</span>
               <span class="meal-leg-name">${esc(m.main.name)}</span>
+              ${mealNavUrl(m.main) ? `<a class="next-leg-nav meal-nav" href="${esc(mealNavUrl(m.main))}" target="_blank" rel="noopener">📍导航</a>` : ''}
               <span class="meal-leg-why">${esc(m.main.why || '')}</span>
               ${m.alt ? `<span class="meal-leg-alt">备选：${esc(m.alt.name)}</span>` : ''}
+              ${m.alt && mealNavUrl(m.alt) ? `<a class="next-leg-nav meal-nav" href="${esc(mealNavUrl(m.alt))}" target="_blank" rel="noopener">📍备选</a>` : ''}
             </p>`;
           }
 
@@ -2705,6 +2729,7 @@
 
         // 没匹配时段的 meal → 绑定到最后 POI（兜底）
         const leftoverMeals = pendingMeals.filter(t => !mealsUsed[t]);
+        let timelineItems = null;
         if (leftoverMeals.length && d.pois.length) {
           // 找最后 POI 卡片位置（已经在 poiItems 里），追加 meal-leg
           // 简单实现：再循环一次，追加到最后一张
@@ -2717,16 +2742,20 @@
               <span class="meal-leg-icon">🍽</span>
               <span class="meal-leg-label">${esc(labelMap[type])}：</span>
               <span class="meal-leg-name">${esc(m.main.name)}</span>
+              ${mealNavUrl(m.main) ? `<a class="next-leg-nav meal-nav" href="${esc(mealNavUrl(m.main))}" target="_blank" rel="noopener">📍导航</a>` : ''}
               <span class="meal-leg-why">${esc(m.main.why || '')}</span>
               ${m.alt ? `<span class="meal-leg-alt">备选：${esc(m.alt.name)}</span>` : ''}
+              ${m.alt && mealNavUrl(m.alt) ? `<a class="next-leg-nav meal-nav" href="${esc(mealNavUrl(m.alt))}" target="_blank" rel="noopener">📍备选</a>` : ''}
             </p>`;
           }).join('');
-          // 在最后 <li> 闭合前插入（regex 替换）
+          // 在最后 POI 卡片 </li> 闭合前插入兜底 meal-leg（时段窗口没匹配到的餐）
           const lastIdx = poiItems.lastIndexOf('</li>');
-          if (lastIdx !== -1) {
-            // 不动 - 因为我们已经在循环中处理过了，fallback 留作未来扩展
+          if (lastIdx !== -1 && leftoverHtml) {
+            timelineItems = poiItems.slice(0, lastIdx) + leftoverHtml + poiItems.slice(lastIdx);
           }
         }
+
+        const finalPoiItems = typeof timelineItems === 'string' ? timelineItems : poiItems;
 
         const dayRoute = collectDayRouteStops(d);
         const dayRouteBtn = dayRoute
@@ -2743,7 +2772,7 @@
               </div>
             </header>
             <p class="theme">${esc(d.theme || '')}</p>
-            <ol class="timeline">${morningLegHtml}${poiItems}</ol>
+            <ol class="timeline">${morningLegHtml}${finalPoiItems}</ol>
             ${wsTag}
             ${planBHtml}
             ${daySafetyHtml}
