@@ -839,7 +839,11 @@
       background: var(--accent-soft);
       padding: 4px 12px;
       border-radius: 100px;
-      white-space: nowrap;
+      /* 长天气提示（如 D2/D5 30+ 字）在窄屏 nowrap 会撑破卡片叠压相邻元素——允许换行 */
+      white-space: normal;
+      line-height: 1.5;
+      max-width: 100%;
+      overflow-wrap: anywhere;
       font-weight: 500;
     }
     .day-card .theme {
