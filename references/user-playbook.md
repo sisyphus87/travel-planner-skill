@@ -61,6 +61,7 @@
 - **火车段表达为车站 POI**（出发/换乘/到达全量入时间线，note 含车次/座位/取票号/检票口），**不写 transports**（校验器 V8 的 source 白名单只收高德源；`next_mode: "train"` 标记即可跳过通勤粗算）。
 - **改前必归档**：trip.json + 已部署 HTML 快照进 `_history/`。
 - 复合长命令里含 .py 路径会被安全钩子误拦：**JSON 数据修复与管线命令分开跑**。
+- **小红书 MCP 服务必须单实例**：启动/复用一律走 `scripts/xhs_ensure.sh`（探活→死则清孤儿→规范重启），禁止直接 nohup 重复启动；Chrome 泄漏清理走 `scripts/xhs_cleanup_chrome.sh`（默认只杀孤儿，`--all` 全清）。单例二进制已做防泄漏加固（重建先杀旧、失败先退避重试、SIGTERM 先杀浏览器），详见 xhs-research.md「本机 MCP 服务」。
 - 更新轮次命名：一调/二调…依次递增；每轮同步 prebook/budget/清单卡片/XHS 链接，然后 `validate` 0 fail → 全管线 → 部署 → 残留 grep 审计（旧话术清零）→ 记忆沉淀。
 
 ## 四、提醒事项的落点
